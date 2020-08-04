@@ -17,7 +17,9 @@ export const users = {
       return user;
     },
     current: (state) => {
-      return state.items.find(user => user.uid === auth.currentUser.uid);
+      if (auth.currentUser) {
+        return state.items.find(user => user.uid === auth.currentUser.uid);
+      }
     },
     isCurrentAdmin: (state, getters) => {
       const current = getters.current;
