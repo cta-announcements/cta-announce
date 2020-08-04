@@ -70,7 +70,8 @@ node_modules/
 #ignore the firestore private key
 private-key.json
 
-/dist
+# ignore dist directory
+frontend/dist
 
 # local env files
 .env.local
