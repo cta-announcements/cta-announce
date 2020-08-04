@@ -1,7 +1,6 @@
 <template>
   <cta-row-wrapper>
     <cta-user-created-list/>
-    <v-divider class="mb-12"></v-divider>
     <v-row>
       <v-col
         v-for="announcement in announcements"
