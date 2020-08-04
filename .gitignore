@@ -67,7 +67,7 @@ node_modules/
 # dotenv environment variables file
 .env
 
-#ignore the private key
+#ignore the firestore private key
 private-key.json
 
 /dist
