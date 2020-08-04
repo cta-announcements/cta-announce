@@ -1,0 +1,193 @@
+rules_version = '2';
+service cloud.firestore {
+	match /databases/{database}/documents {
+
+
+    ////////////////////////////////////////////////////////
+    // START: Firestore-rules helper functions
+    ////////////////////////////////////////////////////////
+
+    // Checks if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null
+    }
+
+    // Returns Current Auth User's Uid
+    function authUserUid() {
+      return request.auth.uid
+    }
+
+    // Returns Current Auth User's Email
+    function authUserEmail() {
+      return request.auth.token.email
+    }
+
+    // Returns wether Current Auth User's Email is verified
+    function authUserEmailIsVerified() {
+      return request.auth.token.email_verified
+    }
+
+    // Returns the existing data
+    function existingData() {
+      return resource.data
+    }
+
+    // Returns the incoming data
+    function incomingData() {
+      return request.resource.data
+    }
+
+    // Checks if the request has X write fields
+    function hasAmtOfWriteFields(size){
+    	return request.writeFields.size() == size
+    }
+
+    ////////////////////////////////////////////////////////
+    // END: Firestore-rules helper functions ///////////////
+    ////////////////////////////////////////////////////////
+
+// these rules define access and validation for announcement read and writes.
+match /announcements/{announcementId} {
+
+    // check if the current user is an admin
+    function isAuthUserAdmin() {
+        return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true;
+    }
+
+    // newly created announcements are required to have some required fields.
+    // we check this first to make sure there are no errors when calling isOwner
+    function requiredFieldsAreDefined() {
+        let requiredFields = ['authorUid', 'category', 'created', 'expiry', 'display', 'text'];
+        return incomingData().keys().hasAll(requiredFields);
+    }
+
+    // prevent announcements with messages longer than 500 characters
+    function messageLengthIsWithinLimit() {
+        let limit = 500;
+        return incomingData().text.size() <= limit;
+    }
+
+    // checks that the announcement created date is inline with the server's
+    // created date
+    function createdDateMatchesServerValue() {
+        return incomingData().created == request.time; 
+    }
+
+    // checks that the expiry date is within range
+
+    // check to make sure that the expiry date does not exceed limits
+    function expiryDateIsWithinLimit() {
+        // difference of ten daye (i.e. 1st --> 11th is 10 days, or 11 X 24 hr)
+        // however, this range can vary by a day, as some announcements
+        // will be submitted past 9:00 AM (so plus one, hence 12)
+        let maxLife = (1000 * 60 * 60 * 24) * 12; 
+        return (incomingData().expiry.toMillis() >= request.time.toMillis()) && (incomingData().expiry.toMillis() - request.time.toMillis()) <= maxLife;
+    }
+
+    // valid wrapper for field checks
+    function valid() {
+        return requiredFieldsAreDefined() && messageLengthIsWithinLimit() && createdDateMatchesServerValue() && expiryDateIsWithinLimit();
+    }
+
+    // this function uses the incoming data's auth field instead of
+    // the auth field of an exisiting resource. This is because the announcement is
+    // being created.
+    function authorUidIsUsers() {
+        return incomingData().authorUid == authUserUid();
+    }
+
+    // this check happanes when a user requests to delete their own
+    // announcement. Therefore, we can check their uid against 
+    // existing data, rather than incoming data.
+    function isOwner() {
+        return existingData().authorUid == authUserUid();
+    }
+
+    // checks if the announcements display property is false. Only admins can set it to true.
+    function notElevatingAnnouncementPermissions() {
+        return incomingData().display == false;
+    }
+    
+    // all announcements are public, and therefore reads are always allowed.
+    // in the future, it might be smart to lockdown list requests for bandwidth reasons.
+    allow read: if true;
+    
+    // announcements must have their authorUid field set to the auth user's uid.
+    // they must also contain the required fields, and obey some restrictions on 
+    // the expiry and created dates. Only admins can create announcements with
+    // elevated permissions (i.e. is displayed on the announcement display and on the
+    // announcements page)
+    allow create: if 
+    isAuthenticated() && authorUidIsUsers() && notElevatingAnnouncementPermissions() && valid() || 
+    isAuthenticated() && isAuthUserAdmin() && authorUidIsUsers() && valid();
+
+
+    // currently updates are only performed by admins. In the future user's may be able to edit an 
+    // announcement before it is approved, however.
+    allow update: if isAuthenticated() && isAuthUserAdmin();
+
+    // user's can only delete their own announcements. Admins have permissions to delete anyone's
+    allow delete: if isAuthenticated() && isOwner() || isAuthenticated() && isAuthUserAdmin();
+}
+// These rules are used to define what permissions are needed to access (read, write)
+// user data. Validation is also done here.
+match /users/{userUid} {
+
+    // check if the current user is an admin
+    function isAuthUserAdmin() {
+        return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true;
+    }
+
+    // returns the auth user's name
+    function authUserName() {
+        return request.auth.token.name;
+    }
+
+    // check that the user is the owner of this profile (the id of the doc is the)
+    // same as the auth user's id
+    function isOwner() {
+        return userUid == authUserUid();
+    }
+
+    // checks that the user is not trying to make themselves an admin
+    function notElevatingPermissions() {
+        return incomingData().admin == false;
+    }
+    
+    // check that the user has sent something as their photoURL.
+    // Presently, there is no way to validate that the URL is valid
+    // since it is not sent up with the auth token on request
+    function photoURLIsDefined() {
+        return 'photoURL' in incomingData();
+    }
+    
+    // make sure the created profile is sending matching details (name, email)
+    // to the auth object on request
+    function authDetailsAreCorrect() {
+        return incomingData().email == authUserEmail() && incomingData().displayName == authUserName();
+    }
+
+    // a wrapper function to enclose photoURL and authDetail checks
+    function valid() {
+        return photoURLIsDefined() && authDetailsAreCorrect();
+    }
+    
+    // reads are globally allowed on users since all stored profile data
+    // is public info
+    allow read: if true
+
+    // creates do not depend on any admin permissions. This is because
+    // the only way new users are created is through Google's oAuth signup 
+    // flow. Admins cannot create new users, the user must create themselves.
+    allow create: if isAuthenticated() && isOwner() && notElevatingPermissions() && valid()
+
+    // allow updates (usually about changing the admin status of a user) only by admins.
+    // in the future, the app could support profile detail editing (i.e. changing photoURL, displayName, or email),
+    // however, for now these operations are locked down for normal users.
+    allow update: if isAuthenticated() && isAuthUserAdmin()
+
+    // there is currently no in-app functionality for deleteing a user
+    allow delete: if false
+}
+  }
+}

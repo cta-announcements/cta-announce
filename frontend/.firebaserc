@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "cta-announcements-ce36d"
+  },
+  "targets": {
+    "cta-announcements-ce36d": {
+      "hosting": {
+        "app": [
+          "cta-announce"
+        ],
+        "app-initial": [
+          "cta-announcements-ce36d"
+        ]
+      }
+    }
+  }
+}

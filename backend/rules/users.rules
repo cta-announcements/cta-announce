@@ -1,0 +1,60 @@
+// These rules are used to define what permissions are needed to access (read, write)
+// user data. Validation is also done here.
+match /users/{userUid} {
+
+    // check if the current user is an admin
+    function isAuthUserAdmin() {
+        return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true;
+    }
+
+    // returns the auth user's name
+    function authUserName() {
+        return request.auth.token.name;
+    }
+
+    // check that the user is the owner of this profile (the id of the doc is the)
+    // same as the auth user's id
+    function isOwner() {
+        return userUid == authUserUid();
+    }
+
+    // checks that the user is not trying to make themselves an admin
+    function notElevatingPermissions() {
+        return incomingData().admin == false;
+    }
+    
+    // check that the user has sent something as their photoURL.
+    // Presently, there is no way to validate that the URL is valid
+    // since it is not sent up with the auth token on request
+    function photoURLIsDefined() {
+        return 'photoURL' in incomingData();
+    }
+    
+    // make sure the created profile is sending matching details (name, email)
+    // to the auth object on request
+    function authDetailsAreCorrect() {
+        return incomingData().email == authUserEmail() && incomingData().displayName == authUserName();
+    }
+
+    // a wrapper function to enclose photoURL and authDetail checks
+    function valid() {
+        return photoURLIsDefined() && authDetailsAreCorrect();
+    }
+    
+    // reads are globally allowed on users since all stored profile data
+    // is public info
+    allow read: if true
+
+    // creates do not depend on any admin permissions. This is because
+    // the only way new users are created is through Google's oAuth signup 
+    // flow. Admins cannot create new users, the user must create themselves.
+    allow create: if isAuthenticated() && isOwner() && notElevatingPermissions() && valid()
+
+    // allow updates (usually about changing the admin status of a user) only by admins.
+    // in the future, the app could support profile detail editing (i.e. changing photoURL, displayName, or email),
+    // however, for now these operations are locked down for normal users.
+    allow update: if isAuthenticated() && isAuthUserAdmin()
+
+    // there is currently no in-app functionality for deleteing a user
+    allow delete: if false
+}
