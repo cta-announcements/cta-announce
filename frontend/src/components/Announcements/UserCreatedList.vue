@@ -39,7 +39,16 @@ export default {
   },
   computed: {
     ownedByCurrentUser() {
-      return this.$store.getters['announcements/ownedByCurrentUser'];
+      // it can either be undefined (there is no current user) or length 0
+      // (the user has no announcements). We return both of these cases
+      // as undefined
+      const announcements = this.$store.getters['announcements/ownedByCurrentUser'];
+      if (announcements) {
+        if (announcements.length > 0) {
+          return announcements;
+        }
+      }
+      return undefined;
     },
   },
 };

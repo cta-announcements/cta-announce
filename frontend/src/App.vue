@@ -23,7 +23,7 @@ export default {
     // register listener
     this.$store.dispatch('announcements/bindRef');
 
-    // fetch the user profile sdetails
+    // fetch the user profile details
     if (auth.currentUser) {
       this.$store.dispatch('users/fetchByUid', auth.currentUser.uid);
     }

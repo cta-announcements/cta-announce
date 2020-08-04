@@ -1,10 +1,11 @@
-import { collections, auth, authProvider } from '../../firebase'
+import { collections, auth , authProvider } from '../../firebase'
 
 import Vue from 'vue'
 
 export const users = {
   namespaced: true,
   state: () => ({
+    currentAuthUser: {},
     items: [
     ]
   }),
@@ -17,8 +18,8 @@ export const users = {
       return user;
     },
     current: (state) => {
-      if (auth.currentUser) {
-        return state.items.find(user => user.uid === auth.currentUser.uid);
+      if (state.currentAuthUser) {
+        return state.items.find(user => user.uid === state.currentAuthUser.uid);
       }
     },
     isCurrentAdmin: (state, getters) => {
@@ -42,6 +43,9 @@ export const users = {
     },
     setAdmin: (state, { user, isAdmin }) => {
       Vue.set(user, 'admin', isAdmin);
+    },
+    setCurrentAuthUser: (state, auth) => {
+      state.currentAuthUser = auth;
     }
   },
   actions: {

@@ -9,7 +9,6 @@ Vue.config.productionTip = false
 
 let app;
 auth.onAuthStateChanged(() => {
-
   // load the vue instance if it does not already exist
   if (!app) {
     app = new Vue({
@@ -19,5 +18,10 @@ auth.onAuthStateChanged(() => {
       render: h => h(App)
     }).$mount('#app')
   }
+
+  // when the auth state is changed, we need to resave the 
+  // currentUser.auth object to the state
+  store.commit('users/setCurrentAuthUser', auth.currentUser);
+
 })
 
