@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTA Announce Redirect</title>
+</head>
+
+<body>
+    <p> Please wait... </p>
+    <!-- We need a canonical link as firebase provides two hosting domains by default.
+        The first is <project-id>.web.app and the second is one I created at cta-announce.web.app. 
+        Therefore, we just redirect to that one -->
+    <link rel="canonical" href="https://cta-announce.web.app/" />
+</body>
+
+<script>
+    // redirect the user to the correct domain
+    const destination = 'https://cta-announce.web.app/'
+    window.location.replace(destination);
+</script>
+
+</html>
