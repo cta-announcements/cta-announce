@@ -19,6 +19,10 @@ firebase-debug.log*
 # it commented so all members can deploy to the same project(s) in .firebaserc.
 # .firebaserc
 
+# we can ignore the main firestore.rules file because it is compiled from
+# the two files in the rules folder
+firestore.rules
+
 # Runtime data
 pids
 *.pid
