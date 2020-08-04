@@ -25,6 +25,9 @@ export default {
   computed: {
     announcements() {
       const isAdmin = this.$store.getters['users/isCurrentAdmin'];
+
+      // admins see all unapproved and approved announcements.
+      // this is so they can delete/approve them
       return isAdmin
         ? this.$store.getters['announcements/ordered']
         : this.$store.getters['announcements/displayedAndOrdered'];

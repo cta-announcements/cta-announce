@@ -13,6 +13,7 @@ const firebaseConfig = {
   appId: "1:789298365520:web:dffdf08356f4f73e5dbd55"
 };
 
+// initialize the firebase app
 firebase.initializeApp(firebaseConfig);
 
 // auth exports
@@ -22,7 +23,7 @@ const authProvider = new firebase.auth.GoogleAuthProvider();
 // firestore exports
 const firestore = firebase.firestore();
 
-// if on localhost and in dev mode, use the emulator
+// connect to localhost for development
 if (location.hostname === 'localhost') {
   console.log('Connected to localhost');
   firestore.settings({
@@ -31,6 +32,7 @@ if (location.hostname === 'localhost') {
   });
 }
 
+// export the two main collections, users and announcements
 const collections = {
   users: firestore.collection('users'),
   announcements: firestore.collection('announcements')
