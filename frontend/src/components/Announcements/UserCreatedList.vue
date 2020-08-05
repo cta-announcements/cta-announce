@@ -7,7 +7,7 @@
       v-model="openIndex"
     >
       <v-expansion-panel class="grey lighten-4">
-        <v-expansion-panel-header class="text-h4 px-0">
+        <v-expansion-panel-header class="text-h5 text-sm-h4  px-0">
           Your announcements
           <template v-slot:actions>
             <v-icon large>$expand</v-icon>

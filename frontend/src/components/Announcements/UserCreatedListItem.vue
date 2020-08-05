@@ -39,7 +39,7 @@ export default {
       return categories[this.announcement.category].icon;
     },
     chipText() {
-      return this.announcement.display ? 'Approved' : 'Awaiting approval';
+      return this.announcement.display ? 'Approved' : 'Pending';
     },
     chipColor() {
       return this.announcement.display ? 'primary' : 'grey';
