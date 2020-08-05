@@ -87,7 +87,9 @@ export default {
       // use the nowCopy getter to avoid mutating the now data property
       const nowCopy = new Date(this.now);
       
-
+      // prevents toISOString() from including time values that confuse
+      // v-date-picker
+      nowCopy.setHours(0);
       // if the time is after 9 AM, the max allowed date
       // should be plus 11, to keep the maximum run time at 10 days.
       if (this.isPastCutoffHour) {
@@ -104,7 +106,12 @@ export default {
       // we dissalow expiry dates on the same day
       if (this.isPastCutoffHour) {
         const nowCopy = new Date(this.now);
-        nowCopy.setDate(nowCopy.getDate() + 1);       
+        
+        // prevents toISOString() from including time values that confuse
+        // v-date-picker
+        nowCopy.setHours(0);
+        nowCopy.setDate(nowCopy.getDate() + 1); 
+
         return nowCopy.toISOString();
       }
       return this.now.toISOString();
