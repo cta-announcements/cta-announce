@@ -50,6 +50,7 @@ export const users = {
   },
   actions: {
     fetchByUid: async ({ commit }, uid) => {
+
       const snapshot = await collections.users.doc(uid).get();
       if (snapshot.exists) {
         const user = snapshot.data();

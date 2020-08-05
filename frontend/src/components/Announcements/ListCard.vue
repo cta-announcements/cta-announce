@@ -64,9 +64,7 @@ export default {
     }
   },
   created() {
-    if (!this.author) {
-      this.$store.dispatch('users/fetchByUid', this.announcement.authorUid);
-    } 
+    //this.$store.dispatch('users/fetchByUid', this.announcement.authorUid);
   }
 };
 </script>

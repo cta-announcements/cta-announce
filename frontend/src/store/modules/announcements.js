@@ -34,8 +34,24 @@ export const announcements = {
   },
   actions: {
 
-    bindRef: firestoreAction(({ bindFirestoreRef }) => {
-      bindFirestoreRef('items', collections.announcements.where('expiry', '>=', timestamp.now()));
+    bindRef: firestoreAction(({ bindFirestoreRef, dispatch, rootGetters }) => {
+      bindFirestoreRef('items', collections.announcements.where('expiry', '>=', timestamp.now()), {
+        serialize: (snapshot) => {
+
+          // call the fetch method for this announcements user id if they 
+          // are not already in state
+          const uid = snapshot.data().authorUid;
+          if (rootGetters['users/getByUid'](uid)) {
+            dispatch('users/fetch', uid, {root: true});
+          }
+          
+          // snapshot.data() DOES NOT contain the `id` of the document. By
+          // default, Vuefire adds it as a non enumerable property named id.
+          // This allows to easily create copies when updating documents, as using
+          // the spread operator won't copy it
+          return Object.defineProperty(snapshot.data(), 'id', { value: snapshot.id })
+        }
+      });
     }),
 
     unbindRef: firestoreAction(({ unbindFirestoreRef }) => {
@@ -68,6 +84,5 @@ export const announcements = {
     delete: firestoreAction((context, id) => {
       collections.announcements.doc(id).delete();
     })
-
   }
 }
