@@ -21,30 +21,9 @@
       <cta-list-card-footer
         :photoURL="author.photoURL"
         v-if="author"
+        :announcement="announcement"
       >
         <template #displayName>{{ author.displayName }}</template>
-
-        <template #delete>
-          <v-btn icon @click="confirmAnnouncementDelete()">
-            <v-icon color="grey">mdi-delete</v-icon>
-          </v-btn>
-        </template>
-
-        <template #approve>
-          <cta-button
-            @clicked="toggleAnnouncementDisplay()"
-            :success="announcement.display"
-            successColor="green"
-          >
-            <v-icon left>mdi-check</v-icon>
-            <template #success>
-              approved
-            </template>
-            <template #normal>
-              approve
-            </template>
-          </cta-button>
-        </template>
 
       </cta-list-card-footer>
     </v-col>
@@ -53,13 +32,11 @@
 
 <script>
 import categories from '../../data/categories';
-import dialogMessages from '../../data/dialogMessages'
 
 export default {
   components: {
     ctaCard: () => import('../Card'),
-    ctaListCardFooter: () => import('./ListCardFooter'),
-    ctaButton: () => import('../Button')
+    ctaListCardFooter: () => import('./ListCardFooter')
   },
   props: {
     announcement: Object
@@ -85,24 +62,6 @@ export default {
     author() {
       return this.$store.getters['users/getByUid'](this.announcement.authorUid);
     }
-  },
-  methods: {
-    toggleAnnouncementDisplay() {
-      this.$store.dispatch('announcements/updateDisplay', {
-        display: !this.announcement.display,
-        id: this.announcement.id
-      });
-    },
-    confirmAnnouncementDelete() {
-      this.$store.dispatch('dialog/show', {
-        ...dialogMessages.announcements.delete,
-        callback: this.deleteAnnouncement
-      });
-    },
-    deleteAnnouncement() {
-      this.$store.dispatch('announcements/delete', this.announcement.id);
-      this.$store.commit('dialog/setDisplay', false);
-    },
   },
   created() {
     if (!this.author) {

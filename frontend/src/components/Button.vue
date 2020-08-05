@@ -8,12 +8,12 @@
       :disabled="disabled"
     >
     <slot></slot>
-    <div v-if="success">
-      <slot name="success"></slot>
-    </div>
-    <div v-else>
-      <slot name="normal"></slot>
-    </div>
+      <template v-if="success">
+        <slot name="success"></slot>
+      </template>
+      <template v-else>
+        <slot name="normal"></slot>
+      </template>
     </v-btn>
   </div>
 </template>
