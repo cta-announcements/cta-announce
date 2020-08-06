@@ -1,6 +1,6 @@
 <template>
   <v-list-item two-line>
-    <v-icon color="blue">mdi-microphone</v-icon>
+    <cta-icon color="blue">mdi-microphone</cta-icon>
     <v-list-item-content class="ml-4">
       <v-list-item-title class="text-h5">
         <strong>cta</strong> announce
@@ -10,5 +10,9 @@
 </template>
 
 <script>
-export default {};
+export default {
+  components: {
+    ctaIcon: () => import('../Icon')
+  }
+};
 </script>

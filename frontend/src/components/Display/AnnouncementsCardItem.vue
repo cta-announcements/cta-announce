@@ -14,10 +14,10 @@
               {{ author.displayName }}
             </v-list-item-subtitle>
             <v-list-item-subtitle>
-              <v-chip class="text-h4 grey--text text--lighten-4" :color="categoryColor">
-                <v-icon large left>
+              <v-chip class="text-h4 secondary--text text--lighten-4" :color="categoryColor">
+                <cta-icon large left color="white">
                   {{ categoryIcon }}
-                </v-icon>
+                </cta-icon>
                 {{ announcement.category }}
               </v-chip>
             </v-list-item-subtitle>
@@ -37,6 +37,9 @@ import categories from '../../data/categories';
 export default {
   props: {
     announcement: Object,
+  },
+  components: {
+    ctaIcon: () => import('../Icon')
   },
   computed: {
     categoryIcon() {

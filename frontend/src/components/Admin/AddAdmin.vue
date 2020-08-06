@@ -15,9 +15,9 @@
         <v-row>
           <v-text-field label="Email" outlined v-model="email">
             <template #append-outer>
-              <v-icon color="grey" @click="searchUser()">
+              <cta-icon @click="searchUser()">
                 mdi-magnify
-              </v-icon>
+              </cta-icon>
             </template>
           </v-text-field>
         </v-row>
@@ -33,9 +33,9 @@
           <template #actions>
             <v-list-item-action>
               <v-btn icon @click="addAdmin()" :disabled="user.admin">
-                <v-icon color="grey">{{
+                <cta-icon>{{
                   user.admin ? 'mdi-check' : 'mdi-plus'
-                }}</v-icon>
+                }}</cta-icon>
               </v-btn>
             </v-list-item-action>
           </template>
@@ -58,6 +58,7 @@ export default {
   components: {
     ctaCard: () => import('../Card'),
     ctaUser: () => import('../User'),
+    ctaIcon: () => import('../Icon')
   },
   methods: {
     async searchUser() {

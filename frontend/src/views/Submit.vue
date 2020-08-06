@@ -32,6 +32,7 @@
 <script>
 import snackbarMessages from '../data/snackbarMessages';
 import dialogMessages from '../data/dialogMessages';
+import expiryConstants from '../data/expiryConstants';
 
 export default {
   components: {
@@ -53,7 +54,7 @@ export default {
       return this.$store.getters['users/isCurrentAdmin'];
     },
     beforeCutoff() {
-      return (new Date().getHours() < 9);
+      return (new Date().getHours() < expiryConstants.cutoffHour);
     }
   },
   methods: {

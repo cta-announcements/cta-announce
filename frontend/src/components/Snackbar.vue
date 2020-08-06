@@ -2,15 +2,18 @@
   <v-snackbar v-model="display">
     {{ message }}
     <template v-slot:action="{ attrs }">
-      <v-btn color="primary" text v-bind="attrs" @click="display = false">
+      <cta-button color="primary" text v-bind="attrs" @clicked="display = false">
         Close
-      </v-btn>
+      </cta-button>
     </template>
   </v-snackbar>
 </template>
 
 <script>
 export default {
+  components: {
+    ctaButton: () => import('./Button')
+  },
   computed: {
     display: {
       get() {

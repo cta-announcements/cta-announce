@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import rules from '../../data/rules';
+import rules from '../../util/rules';
 
 export default {
   computed: {
@@ -61,6 +61,7 @@ export default {
       'textarea'
     );
 
+    // make sure the scroll height is set to the height on load
     this.$nextTick(() => {
       this.$options.textareaRef.style.height =
         this.$options.textareaRef.scrollHeight + 'px';

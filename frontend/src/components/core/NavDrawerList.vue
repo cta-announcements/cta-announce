@@ -7,9 +7,9 @@
       :key="view.title"
     >
       <v-list-item-icon>
-        <v-icon>
+        <cta-icon color="white">
           {{ view.icon }}
-        </v-icon>
+        </cta-icon>
       </v-list-item-icon>
       <v-list-item-content>
         <div class="text-subtitle-1">{{ view.title }}</div>
@@ -20,6 +20,9 @@
 
 <script>
 export default {
+  components: {
+    ctaIcon: () => import('../Icon')
+  },
   computed: {
     list() {
       const isAdmin = this.$store.getters['users/isCurrentAdmin'];

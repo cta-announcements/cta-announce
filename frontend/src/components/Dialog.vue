@@ -9,7 +9,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <cta-button @clicked="display = false" color="grey" class="mr-4"
+        <cta-button @clicked="display = false" color="secondary" class="mr-4"
           >Cancel</cta-button
         >
         <cta-button @clicked="confirmed()">Okay</cta-button>

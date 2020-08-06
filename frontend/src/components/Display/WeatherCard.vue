@@ -5,7 +5,7 @@
         <v-row class="pl-6" align="center">
           <v-col cols="5">{{ temp }}&deg;C</v-col>
           <v-col cols="4">
-            <v-icon size="128">{{ weatherIcon }}</v-icon>
+            <cta-icon color="white" size="128">{{ weatherIcon }}</cta-icon>
           </v-col>
           <v-col cols="12" class="text-h4">
             {{ date }} | Day
@@ -23,7 +23,8 @@ import weatherIcons from '../../data/weather'
 
 export default {
   components: {
-    ctaCard: () => import('./Card')
+    ctaCard: () => import('./Card'),
+    ctaIcon: () => import('../Icon')
   },
   data: () => ({
     now: new Date(),

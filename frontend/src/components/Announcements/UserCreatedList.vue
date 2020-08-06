@@ -6,15 +6,15 @@
       class="mb-8"
       v-model="openIndex"
     >
-      <v-expansion-panel class="grey lighten-4">
+      <v-expansion-panel class="secondary lighten-4">
         <v-expansion-panel-header class="text-h5 text-sm-h4  px-0">
           Your announcements
           <template v-slot:actions>
-            <v-icon large>$expand</v-icon>
+            <cta-icon large>$expand</cta-icon>
           </template>
         </v-expansion-panel-header>
         <v-expansion-panel-content class="mx-n10">
-          <v-list class="grey lighten-4">
+          <v-list class="secondary lighten-4">
             <cta-user-created-list-item
               v-for="announcement in ownedByCurrentUser"
               :key="announcement.id"
@@ -36,6 +36,7 @@ export default {
   }),
   components: {
     ctaUserCreatedListItem: () => import('./UserCreatedListItem'),
+    ctaIcon: () => import('../Icon')
   },
   computed: {
     ownedByCurrentUser() {

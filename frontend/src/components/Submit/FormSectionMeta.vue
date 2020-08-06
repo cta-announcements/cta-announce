@@ -52,7 +52,8 @@
 
 <script>
 import categories from '../../data/categories';
-import rules from '../../data/rules';
+import expiryConstants from '../../data/expiryConstants'
+import rules from '../../util/rules';
 
 export default {
   data: () => ({
@@ -81,7 +82,7 @@ export default {
       }
     },
     isPastCutoffHour() {
-      return this.now.getHours() >= this.$options.cutoffHour;
+      return this.now.getHours() >= expiryConstants.cutoffHour;
     },
     maxDate() {
       // use the nowCopy getter to avoid mutating the now data property
@@ -121,8 +122,7 @@ export default {
     // assign static data
     this.$options.categories = Object.keys(categories);
     this.$options.rules = rules;
-    this.$options.maxRunTimeInDays = 10;
-    this.$options.cutoffHour = 8; 
+    this.$options.maxRunTimeInDays = expiryConstants.maxRuntimeInDays;
 
     // update the now object every minute
     setInterval(() => this.now = new Date(), 1000 * 60);

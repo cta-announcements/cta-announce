@@ -6,6 +6,7 @@
       class="white--text font-weight-light"
       @click.stop="$emit('clicked')"
       :disabled="disabled"
+      :text="text"
     >
     <slot></slot>
       <template v-if="success">
@@ -33,7 +34,8 @@ export default {
     color: {
       type: String,
       default: 'primary'
-    }
+    },
+    text: Boolean
   }
 };
 </script>

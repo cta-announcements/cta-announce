@@ -1,3 +1,5 @@
+import expiryConstants from "./expiryConstants";
+
 const dialogMessages = {
   submit: {
     normal: {
@@ -10,7 +12,7 @@ const dialogMessages = {
       title: 'All set 😄'
     },
     beforeCutoff: {
-      text: 'Good work, early bird! Your announcement will be approved by 9:00 AM today. Cheers!',
+      text: `Good work, early bird! Your announcement will be approved by ${expiryConstants.cutoffHour} AM today. Cheers!`,
       title: 'Good news 😁'
     }
   },

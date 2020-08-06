@@ -51,7 +51,6 @@ export default {
         month: 'short',
         day: 'numeric'
       });
-
     },
     category() {
       return categories[this.announcement.category];

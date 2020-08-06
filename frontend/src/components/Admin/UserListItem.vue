@@ -9,7 +9,7 @@
     <template #actions>
       <v-list-item-action>
         <v-btn icon @click="confirm()">
-           <v-icon color="grey" >mdi-delete</v-icon>
+           <cta-icon>mdi-delete</cta-icon>
         </v-btn>
       </v-list-item-action>
     </template>
@@ -26,7 +26,8 @@ export default {
     user: Object
   },
   components: {
-    ctaUser: () => import('../User')
+    ctaUser: () => import('../User'),
+    ctaIcon: () => import('../Icon')
   },
   computed: {
     currentUser() {

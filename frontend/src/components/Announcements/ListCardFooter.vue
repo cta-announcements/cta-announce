@@ -1,7 +1,7 @@
 <template>
   <cta-user class="px-0" :user="user" :actions="isCurrentUserAdmin">
     <template v-slot:displayName="scope">
-      <div class="grey--text text-h6">
+      <div class="secondary--text text-h6">
         {{ scope.displayName }}
       </div>
     </template>
@@ -9,7 +9,7 @@
     <template #actions>
       <v-list-item-action>
         <v-btn icon @click="confirmAnnouncementDelete()">
-          <v-icon color="grey">mdi-delete</v-icon>
+          <cta-icon>mdi-delete</cta-icon>
         </v-btn>
       </v-list-item-action>
       <v-list-item-action>
@@ -18,7 +18,7 @@
           :success="announcement.display"
           successColor="green"
         >
-          <v-icon left>mdi-check</v-icon>
+          <cta-icon left color="white" size="24">mdi-check</cta-icon>
           <template #success>
             approved
           </template>
@@ -38,6 +38,7 @@ export default {
   components: {
     ctaButton: () => import('../Button'),
     ctaUser: () => import('../User'),
+    ctaIcon: () => import('../Icon')
   },
   props: {
     photoURL: String,

@@ -7,15 +7,18 @@
     rounded
   >
     <v-row class="fill-height" align="center" justify="center">
-      <v-icon color="white" large>
+      <cta-icon color="white" large>
         <slot></slot>
-      </v-icon>
+      </cta-icon>
     </v-row>
   </v-sheet>
 </template>
 
 <script>
 export default {
+  components: {
+    ctaIcon: () => import('../Icon')
+  },
   inheritAttrs: true,
   props: {
     color: String
