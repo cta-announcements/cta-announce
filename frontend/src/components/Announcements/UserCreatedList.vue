@@ -13,7 +13,7 @@
             <cta-icon large>$expand</cta-icon>
           </template>
         </v-expansion-panel-header>
-        <v-expansion-panel-content class="mx-n10">
+        <v-expansion-panel-content id="force-remove-padding">
           <v-list class="secondary lighten-4">
             <cta-user-created-list-item
               v-for="announcement in ownedByCurrentUser"
@@ -56,4 +56,12 @@ export default {
 </script>
 
 <style>
+/* Currently vuetify does not have an API to adjust this padding, so we
+ remove it manually */
+#force-remove-padding > * {
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
 </style>
