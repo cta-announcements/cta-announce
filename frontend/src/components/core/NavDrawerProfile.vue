@@ -1,5 +1,5 @@
 <template>
-  <v-list nav v-if="currentUser">
+  <v-list v-if="currentUser" nav>
     <v-divider />
     <cta-user :user="currentUser" class="my-1">
       <template v-slot:displayName="scope">

@@ -24,13 +24,13 @@ const authProvider = new firebase.auth.GoogleAuthProvider();
 const firestore = firebase.firestore();
 
 // connect to localhost for development
-if (location.hostname === 'localhost') {
+/*if (location.hostname === 'localhost') {
   console.log('Connected to localhost');
   firestore.settings({
     host: 'localhost:8080',
     ssl: false
   });
-}
+} */
 
 // export the two main collections, users and announcements
 const collections = {
