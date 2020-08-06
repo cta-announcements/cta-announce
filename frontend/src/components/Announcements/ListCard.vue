@@ -1,4 +1,5 @@
 <template>
+<v-lazy :options="{threshold: .1}" min-height="200" transition="fade-transition">
   <cta-card :color="category.color">
     <template #icon>
       {{ category.icon }}
@@ -19,15 +20,11 @@
     <v-col cols="12">
       <!-- announcements and their authors are loaded in seperately -->
       <cta-list-card-footer
-        :photoURL="author.photoURL"
-        v-if="author"
         :announcement="announcement"
-      >
-        <template #displayName>{{ author.displayName }}</template>
-
-      </cta-list-card-footer>
+      />
     </v-col>
   </cta-card>
+</v-lazy>
 </template>
 
 <script>
@@ -58,13 +55,11 @@ export default {
     },
     category() {
       return categories[this.announcement.category];
-    },
-    author() {
-      return this.$store.getters['users/getByUid'](this.announcement.authorUid);
     }
   },
   created() {
-    //this.$store.dispatch('users/fetchByUid', this.announcement.authorUid);
+    // we send out a request for the current user
+    this.$store.dispatch('users/fetchByUid', this.announcement.authorUid);
   }
 };
 </script>

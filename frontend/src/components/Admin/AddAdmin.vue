@@ -24,9 +24,20 @@
       </v-col>
 
       <v-col cols="12" class="pt-0 mb-4" v-if="user">
-        <cta-user :user="user" @action-clicked="addAdmin()" :disabled="user.admin">
-          <template #action-icon>
-            {{user.admin ? 'mdi-check' : 'mdi-plus'}}
+        <cta-user :user="user" email actions>
+          <!-- no need to change style -->
+          <template v-slot:displayName="scope">
+            {{ scope.displayName }}
+          </template>
+
+          <template #actions>
+            <v-list-item-action>
+              <v-btn icon @click="addAdmin()" :disabled="user.admin">
+                <v-icon color="grey">{{
+                  user.admin ? 'mdi-check' : 'mdi-plus'
+                }}</v-icon>
+              </v-btn>
+            </v-list-item-action>
           </template>
         </cta-user>
       </v-col>
@@ -34,20 +45,19 @@
         No users found. Try clicking the search button.
       </v-col>
     </cta-card>
-
   </div>
 </template>
 
 <script>
-import snackbarMessages from '../../data/snackbarMessages'
+import snackbarMessages from '../../data/snackbarMessages';
 
 export default {
   data: () => ({
-    email: ''
+    email: '',
   }),
   components: {
     ctaCard: () => import('../Card'),
-    ctaUser: () => import('./User')
+    ctaUser: () => import('../User'),
   },
   methods: {
     async searchUser() {
@@ -58,20 +68,32 @@ export default {
             this.emailLowerCase
           );
           if (!exists) {
-            this.$store.dispatch('snackbar/show', snackbarMessages.admin.userDoesNotExist);
+            this.$store.dispatch(
+              'snackbar/show',
+              snackbarMessages.admin.userDoesNotExist
+            );
           }
         } catch {
-          this.$store.dispatch('snackbar/show', snackbarMessages.errorWhileSearching);
+          this.$store.dispatch(
+            'snackbar/show',
+            snackbarMessages.errorWhileSearching
+          );
         }
       }
     },
     addAdmin() {
       try {
-        this.$store.dispatch('users/setAdminStatus', {user: this.user, newStatus: true});
+        this.$store.dispatch('users/setAdminStatus', {
+          user: this.user,
+          newStatus: true,
+        });
       } catch {
-         this.$store.dispatch('snackbar/show', snackbarMessages.errorWhileAdding);
+        this.$store.dispatch(
+          'snackbar/show',
+          snackbarMessages.errorWhileAdding
+        );
       }
-    }
+    },
   },
   computed: {
     user() {
@@ -84,7 +106,7 @@ export default {
     },
     emailLowerCase() {
       return this.email.toLowerCase();
-    }
-  }
+    },
+  },
 };
 </script>

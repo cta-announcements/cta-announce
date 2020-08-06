@@ -1,8 +1,19 @@
 <template>
-  <cta-user :user="user" @action-clicked="confirm()">
-    <template #action-icon>
-      mdi-delete
+  <cta-user :user="user" actions email class="px-0" two-line>
+
+    <template v-slot:displayName="scope">
+      <!-- default styling is okay in this instance -->
+      {{scope.displayName}}
     </template>
+
+    <template #actions>
+      <v-list-item-action>
+        <v-btn icon @click="confirm()">
+           <v-icon color="grey" >mdi-delete</v-icon>
+        </v-btn>
+      </v-list-item-action>
+    </template>
+   
   </cta-user>
 </template>
 
@@ -15,12 +26,17 @@ export default {
     user: Object
   },
   components: {
-    ctaUser: () => import('./User')
+    ctaUser: () => import('../User')
+  },
+  computed: {
+    currentUser() {
+      return this.$store.getters['users/current']
+    }
   },
   methods: {
     confirm() {
       // the admin is trying to unadd themselves
-      if (this.$store.getters['users/current'].uid === this.user.uid) {
+      if (this.currentUser?.uid === this.user.uid) {
         this.$store.dispatch('dialog/show', {
           ...dialogMessages.admin.unaddingSelf,
           callback: this.unaddAdmin

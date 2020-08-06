@@ -26,6 +26,9 @@ export const announcements = {
     },
     ownedByCurrentUser(state, getters, rootState, rootGetters) {
       const currentUser = rootGetters['users/current'];
+
+      // we can't use optional chaining here because we don't want to run
+      // filter at all if the currentUser is undefined
       if (currentUser) {
         return getters.ordered
           .filter(announcement => announcement.authorUid === currentUser.uid);
@@ -34,24 +37,8 @@ export const announcements = {
   },
   actions: {
 
-    bindRef: firestoreAction(({ bindFirestoreRef, dispatch, rootGetters }) => {
-      bindFirestoreRef('items', collections.announcements.where('expiry', '>=', timestamp.now()), {
-        serialize: (snapshot) => {
-
-          // call the fetch method for this announcements user id if they 
-          // are not already in state
-          const uid = snapshot.data().authorUid;
-          if (rootGetters['users/getByUid'](uid)) {
-            dispatch('users/fetch', uid, {root: true});
-          }
-          
-          // snapshot.data() DOES NOT contain the `id` of the document. By
-          // default, Vuefire adds it as a non enumerable property named id.
-          // This allows to easily create copies when updating documents, as using
-          // the spread operator won't copy it
-          return Object.defineProperty(snapshot.data(), 'id', { value: snapshot.id })
-        }
-      });
+    bindRef: firestoreAction(({ bindFirestoreRef }) => {
+      bindFirestoreRef('items', collections.announcements.where('expiry', '>=', timestamp.now()));
     }),
 
     unbindRef: firestoreAction(({ unbindFirestoreRef }) => {
