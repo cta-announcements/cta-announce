@@ -59,6 +59,9 @@ export default {
       const numberOfWords = announcement.text.split(' ').length;
       const readingTimeInSeconds = numberOfWords * secondsPerWord + minTime;
 
+      // clear the previous timeout
+      clearTimeout(this.timeout);
+
       // call this function to advance the current announcement counter
       // after the computed reading time has passed
       this.timeout = setTimeout(
@@ -88,6 +91,7 @@ export default {
     if (this.announcements.length > 1) {
       this.nextAnnouncement();
     }
+    setInterval(() => console.log(this.timeout), 1000);
   },
 };
 </script>
