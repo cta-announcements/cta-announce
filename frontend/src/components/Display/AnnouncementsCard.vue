@@ -91,7 +91,6 @@ export default {
     if (this.announcements.length > 1) {
       this.nextAnnouncement();
     }
-    setInterval(() => console.log(this.timeout), 1000);
   },
 };
 </script>
