@@ -13,7 +13,8 @@
         </v-list-item-subtitle>
       </v-list-item-content>
       <v-list-item-action>
-        <v-btn icon @click="confirmDelete()">
+        <!-- prevent event bubble up -->
+        <v-btn icon @click.stop="confirmDelete()">
           <cta-icon>
             mdi-delete
           </cta-icon>

@@ -1,7 +1,7 @@
 <template>
   <v-dialog max-width="500" v-model="display">
     <v-card>
-      <v-card-title class="text-h6">
+      <v-card-title class="text-h6 prevent-word-break">
         {{ title }}
       </v-card-title>
       <v-card-text class="text-body-1">
@@ -21,7 +21,7 @@
 <script>
 export default {
   components: {
-    ctaButton: () => import('./Button')
+    ctaButton: () => import('./Button'),
   },
   computed: {
     display: {
@@ -30,7 +30,7 @@ export default {
       },
       set(value) {
         this.$store.commit('dialog/setDisplay', value);
-      }
+      },
     },
     title() {
       return this.$store.state.dialog.title;
@@ -39,14 +39,21 @@ export default {
       return this.$store.state.dialog.text;
     },
     callback() {
-       return this.$store.state.dialog.callback
-    }
+      return this.$store.state.dialog.callback;
+    },
   },
   methods: {
     confirmed() {
       // call the clicked callback function
       this.callback();
-    }
-  }
+    },
+  },
 };
 </script>
+
+<style scoped>
+/* prevent word breaking in the title */
+.prevent-word-break {
+  word-break: normal;
+}
+</style>
