@@ -7,6 +7,7 @@
       @click.stop="$emit('clicked')"
       :disabled="disabled"
       :text="text"
+      :to="to"
     >
     <slot></slot>
       <template v-if="success">
@@ -35,7 +36,8 @@ export default {
       type: String,
       default: 'primary'
     },
-    text: Boolean
+    text: Boolean,
+    to: String
   }
 };
 </script>

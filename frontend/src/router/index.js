@@ -20,6 +20,10 @@ Vue.use(VueRouter)
   {
     path: '/admin',
     component: () => import('../views/Admin'),
+  },
+  {
+    path: '*',
+    component: () => import('../views/404')
   }
 ]
 
