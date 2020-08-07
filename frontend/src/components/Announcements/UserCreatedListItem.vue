@@ -1,30 +1,36 @@
 <template>
-  <v-list-item>
-    <v-list-item-icon>
-      <cta-icon>{{ categoryIcon }}</cta-icon>
-    </v-list-item-icon>
-    <v-list-item-content>
-      <v-list-item-title>
-        {{ announcement.category }}
-      </v-list-item-title>
-      <v-list-item-subtitle class="mr-4">
-        {{ announcement.text }}
-      </v-list-item-subtitle>
-    </v-list-item-content>
-    <v-list-item-action>
-      <v-btn icon @click="confirmDelete()">
-        <cta-icon>
-          mdi-delete
-        </cta-icon>
-      </v-btn>
-    </v-list-item-action>
-    <v-list-item-action>
-      <v-chip :color="chipColor" class="white--text">
-        <cta-icon left color="white" class="mr-2">{{ chipIcon }}</cta-icon>
-        {{ chipText }}
-      </v-chip>
-    </v-list-item-action>
-  </v-list-item>
+  <div>
+    <v-list-item @click="dialog = true">
+      <v-list-item-icon>
+        <cta-icon>{{ categoryIcon }}</cta-icon>
+      </v-list-item-icon>
+      <v-list-item-content>
+        <v-list-item-title>
+          {{ announcement.category }}
+        </v-list-item-title>
+        <v-list-item-subtitle class="mr-4">
+          {{ announcement.text }}
+        </v-list-item-subtitle>
+      </v-list-item-content>
+      <v-list-item-action>
+        <v-btn icon @click="confirmDelete()">
+          <cta-icon>
+            mdi-delete
+          </cta-icon>
+        </v-btn>
+      </v-list-item-action>
+      <v-list-item-action>
+        <v-chip :color="chipColor" class="white--text">
+          <cta-icon left color="white" class="mr-2">{{ chipIcon }}</cta-icon>
+          {{ chipText }}
+        </v-chip>
+      </v-list-item-action>
+    </v-list-item>
+    <cta-user-created-list-item-dialog
+    v-model="dialog"
+    :announcement="announcement"
+    />
+  </div>
 </template>
 
 <script>
@@ -33,11 +39,15 @@ import snackbarMessages from '../../data/snackbarMessages';
 import dialogMessages from '../../data/dialogMessages';
 
 export default {
+  data: () => ({
+    dialog: false
+  }),
   props: {
     announcement: Object,
   },
   components: {
     ctaIcon: () => import('../Icon'),
+    ctaUserCreatedListItemDialog: () => import('./UserCreatedListItemDialog')
   },
   computed: {
     categoryIcon() {
