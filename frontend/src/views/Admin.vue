@@ -1,7 +1,7 @@
 <template>
   <v-container v-if="isAdmin" class="px-6">
     <v-row>
-      <v-col cols="12" lg="6">
+      <v-col cols="12" lg="6" class="mb-6">
          <cta-user-list></cta-user-list>
       </v-col>
        <v-col cols="12" lg="6">
