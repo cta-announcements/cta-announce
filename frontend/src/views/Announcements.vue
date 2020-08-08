@@ -1,6 +1,6 @@
 <template>
   <cta-row-wrapper>
-    <cta-user-created-list/>
+    <cta-user-created-list />
     <v-row>
       <v-col
         v-for="announcement in announcements"
@@ -11,6 +11,13 @@
         <cta-list-card :announcement="announcement" />
       </v-col>
     </v-row>
+    <v-row align="center" justify="center">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        v-if="announcements.length === 0"
+      ></v-progress-circular>
+    </v-row>
   </cta-row-wrapper>
 </template>
 
@@ -19,7 +26,8 @@ export default {
   components: {
     ctaListCard: () => import('../components/Announcements/ListCard.vue'),
     ctaRowWrapper: () => import('../components/RowWrapper'),
-    ctaUserCreatedList: () => import('../components/Announcements/UserCreatedList')
+    ctaUserCreatedList: () =>
+      import('../components/Announcements/UserCreatedList'),
   },
   computed: {
     announcements() {
@@ -30,7 +38,7 @@ export default {
       return isAdmin
         ? this.$store.getters['announcements/ordered']
         : this.$store.getters['announcements/displayedAndOrdered'];
-    }
-  }
+    },
+  },
 };
 </script>
