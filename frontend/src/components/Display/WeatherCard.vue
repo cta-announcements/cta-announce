@@ -59,14 +59,24 @@ export default {
   methods: {
     startClockLoop() {
       // initally sync the system clock and our clock
-      let timeout = 60 - this.now.getSeconds();
+      let timeoutTime = 60 - this.now.getSeconds();
 
-      setTimeout(() => {
-        // once the timer has been set we only need to update the current time once every 60 seconds
-        const updateTime = () => (this.now = new Date());
-        updateTime();
-        setInterval(updateTime, 60 * 1000);
-      }, timeout * 1000);
+      const timeout = setTimeout(() => {
+        // once the timer has been set we only need to update 
+        // the current time once every 60 seconds
+        this.updateTime();
+        setInterval(this.updateTime, 60 * 1000);
+
+        // clear the timeout
+        clearTimeout(timeout);
+      }, timeoutTime * 1000);
+    },
+    startWeatherLoop() {
+      this.updateWeather();
+      setInterval(this.updateWeather, 1000 * 60 * 30);
+    },
+    updateTime() {
+      this.now = new Date();
     },
     updateWeather() {
       // constants for use with open weather map's api
@@ -84,15 +94,13 @@ export default {
           this.icon = response.weather[0].icon.substring(0, 2);
         });
       });
-
-      setInterval(this.updateWeather, 1000 * 60 * 30);
     }
   },
   created() {
     // start the clock shown below the weather on a 60s update loop
     this.startClockLoop();
     // start the weather polling on a 30 min loop
-    this.updateWeather();
+    this.startWeatherLoop();
   }
 };
 </script>
