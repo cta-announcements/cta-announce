@@ -55,10 +55,6 @@ export default {
     category() {
       return categories[this.announcement.category];
     }
-  },
-  created() {
-    // we send out a request for the current user
-    this.$store.dispatch('users/fetchByUid', this.announcement.authorUid);
   }
 };
 </script>

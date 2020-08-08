@@ -39,8 +39,22 @@ export const announcements = {
   },
   actions: {
 
-    bindRef: firestoreAction(({ bindFirestoreRef }) => {
-      bindFirestoreRef('items', collections.announcements.where('expiry', '>=', timestamp.now()));
+    bindRef: firestoreAction(({ bindFirestoreRef, dispatch }) => {
+
+      // we hook into the serialization option for this, just to call fetchUser() for each
+      // announcement.
+      bindFirestoreRef('items', collections.announcements.where('expiry', '>=', timestamp.now()), {
+        serialize: (snapshot) => {
+          // call fetchUser. thanks to inflight there will not be duplicate items added
+          // or calls made for announcements with the same author
+          dispatch('users/fetchByUid', snapshot.data().authorUid, {root: true});
+
+          // return the snapshot data with the id attached as a non
+          // enumerable property (makes it easier to remove it when writing to the
+          // database)
+          return Object.defineProperty(snapshot.data(), 'id', {value: snapshot.id});
+        }
+      });
     }),
 
     unbindRef: firestoreAction(({ unbindFirestoreRef }) => {

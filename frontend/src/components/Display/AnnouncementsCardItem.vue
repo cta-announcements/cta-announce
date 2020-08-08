@@ -66,9 +66,6 @@ export default {
   created() {
     // transition type option
     this.$options.transitionType = 'fade-transition';
-
-    // make a request to inflight for the author (will be ignored if already fetched)
-    this.$store.dispatch('users/fetchByUid', this.announcement.authorUid)
   },
 };
 </script>
