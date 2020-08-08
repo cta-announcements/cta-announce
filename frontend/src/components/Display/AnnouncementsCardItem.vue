@@ -6,13 +6,18 @@
     <v-row class="fill-height ml-2" align="center">
       <v-col cols="11" class="pl-8">
         <v-list-item class="mb-2" two-line>
+
+      
+          <!-- Author field -->
           <v-list-item-avatar size="80">
-            <v-img :src="author.photoURL" />
+            <v-img :src="photoURL" />
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-subtitle class="text-h3">
-              {{ author.displayName }}
+              {{ displayName }}
             </v-list-item-subtitle>
+
+          <!-- Anouncement field -->
             <v-list-item-subtitle>
               <v-chip class="text-h4 secondary--text text--lighten-4" :color="categoryColor">
                 <cta-icon large left color="white">
@@ -51,10 +56,19 @@ export default {
     categoryColor() {
       return categories[this.announcement.category].color;
     },
+    photoURL() {
+      return this.author?.photoURL;
+    },
+    displayName() {
+      return this.author?.displayName;
+    }
   },
   created() {
     // transition type option
     this.$options.transitionType = 'fade-transition';
+
+    // make a request to inflight for the author (will be ignored if already fetched)
+    this.$store.dispatch('users/fetchByUid', this.announcement.authorUid)
   },
 };
 </script>

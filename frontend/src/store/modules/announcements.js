@@ -1,6 +1,8 @@
 import { timestamp, serverTimestamp, collections } from '../../firebase'
 import { firestoreAction } from 'vuexfire'
 
+import toDateFromISO from '../../util/toDateFromISO'
+
 export const announcements = {
   namespaced: true,
   state: () => ({
@@ -47,8 +49,10 @@ export const announcements = {
 
     create: firestoreAction(({ rootState, rootGetters }) => {
 
+      // small utility function to covert from ISO String to Date
+      const expiry = toDateFromISO(rootState.form.date);
+      
       // announcements expire at 11:59 PM on their expiry date
-      const expiry = new Date(rootState.form.date + 'T00:00:00');
       expiry.setHours(23);
       expiry.setMinutes(59);
       expiry.setSeconds(59);
