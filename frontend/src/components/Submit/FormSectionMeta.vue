@@ -3,7 +3,8 @@
     <template #title>Expiry Date and Category</template>
     <template #icon>mdi-clock-outline</template>
     <template #subtitle>
-      Note: the longest an announcement can be run is {{$options.maxRunTimeInDays}} days.
+      Note: the longest an announcement can be run is
+      {{ $options.maxRunTimeInDays }} days.
     </template>
 
     <cta-input-wrapper>
@@ -13,7 +14,7 @@
         :rules="[$options.rules.required]"
         v-model="category"
         outlined
-        :menu-props="{maxHeight: 500}"
+        :menu-props="{ maxHeight: 500 }"
       ></v-select>
       <v-menu
         ref="menu"
@@ -52,17 +53,22 @@
 
 <script>
 import categories from '../../data/categories';
-import expiryConstants from '../../data/expiryConstants'
+import expiryConstants from '../../data/expiryConstants';
 import rules from '../../util/rules';
+import toISODate from '../../util/toISODate'
 
 export default {
   data: () => ({
     menu: false,
-    now: new Date()
   }),
   components: {
     ctaCard: () => import('../Card'),
-    ctaInputWrapper: () => import('./InputWrapper')
+    ctaInputWrapper: () => import('./InputWrapper'),
+  },
+  methods: {
+    isPastCutoffHour(date) {
+      return date.getHours() >= expiryConstants.cutoffHour;
+    }
   },
   computed: {
     category: {
@@ -71,7 +77,7 @@ export default {
       },
       set(val) {
         this.$store.commit('form/setCategory', val);
-      }
+      },
     },
     date: {
       get() {
@@ -79,53 +85,43 @@ export default {
       },
       set(val) {
         this.$store.commit('form/setDate', val);
-      }
-    },
-    isPastCutoffHour() {
-      return this.now.getHours() >= expiryConstants.cutoffHour;
+      },
     },
     maxDate() {
-      // use the nowCopy getter to avoid mutating the now data property
-      const nowCopy = new Date(this.now);
-      
-      // prevents toISOString() from including time values that confuse
-      // v-date-picker
-      nowCopy.setHours(0);
+      const now = new Date();
+
       // if the time is after 9 AM, the max allowed date
       // should be plus 11, to keep the maximum run time at 10 days.
-      if (this.isPastCutoffHour) {
-        nowCopy.setDate(nowCopy.getDate() + this.$options.maxRunTimeInDays + 1);
-        return nowCopy.toISOString();
+      if (this.isPastCutoffHour(now)) {
+        now.setDate(now.getDate() + this.$options.maxRunTimeInDays + 1);
+
+        // utility which returns ISO String in current timezone
+        return toISODate(now);
       }
+
       // otherwise the span is 10 days
-      nowCopy.setDate(nowCopy.getDate() + this.$options.maxRunTimeInDays);
-      return nowCopy.toISOString();
+      now.setDate(now.getDate() + this.$options.maxRunTimeInDays);
+      return toISODate(now);
     },
     minDate() {
       // announcements can only be submitted same-day before 9:00 AM
       // as this is when announcements typically get read. After 9:00 AM
       // we dissalow expiry dates on the same day
-      if (this.isPastCutoffHour) {
-        const nowCopy = new Date(this.now);
-        
-        // prevents toISOString() from including time values that confuse
-        // v-date-picker
-        nowCopy.setHours(0);
-        nowCopy.setDate(nowCopy.getDate() + 1); 
-
-        return nowCopy.toISOString();
+      const now = new Date();
+      if (this.isPastCutoffHour(now)) {
+        now.setDate(now.getDate() + 1);
+        return toISODate(now);
       }
-      return this.now.toISOString();
-    }
+      // otherwise the min date is just the current one
+      now.setDate(now.getDate())
+      return toISODate(now);
+    },
   },
   created() {
     // assign static data
     this.$options.categories = Object.keys(categories);
     this.$options.rules = rules;
     this.$options.maxRunTimeInDays = expiryConstants.maxRuntimeInDays;
-
-    // update the now object every minute
-    setInterval(() => this.now = new Date(), 1000 * 60);
-  }
+  },
 };
 </script>
